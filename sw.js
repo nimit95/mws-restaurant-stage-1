@@ -8,13 +8,13 @@ self.addEventListener('install', function(event) {
       return cache.addAll([
         'index.html',
         'restaurant.html',
-        '/css/main.css',
-        '/css/responsive.css',
-        '/js/dbhelper.js',
-        '/js/main.js',
-        '/js/restaurant_info.js',
-        '/images/*',
-        '/js/register.js',
+        'css/main.css',
+        'css/responsive.css',
+        'js/dbhelper.js',
+        'js/main.js',
+        'js/restaurant_info.js',
+        'images/*',
+        'js/register.js',
         'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
         'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js'
       ]);
