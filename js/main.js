@@ -3,7 +3,9 @@ let restaurants,
   cuisines
 var newMap
 var markers = []
-
+var myLazyLoad = new LazyLoad({
+  elements_selector: ".lazy"
+});
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
@@ -149,6 +151,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
+  myLazyLoad.update();
   addMarkersToMap();
 }
 
@@ -159,23 +162,27 @@ createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
   const image = document.createElement('img');
-  image.className = 'restaurant-img';
+  image.className = 'restaurant-img lazy';
   // image.src = DBHelper.imageUrlForRestaurant(restaurant);
   let baseImgUrl = DBHelper.imageUrlForRestaurant(restaurant);
-  let imagName = baseImgUrl.split(".")[0];
+  let imagName = baseImgUrl.split(".jpg")[0];
 
   let image350 = `${imagName}_350.jpg`;
   let image550 = `${imagName}_550.jpg`;
   let image860 = `${imagName}_860.jpg`;
 
-  image.src = image350;  //fallback image
+  image.setAttribute('data-src', image350);
+  // image.src = image350;  //fallback image
 
-  image.sizes = `(max-width: 500px) 350px, (max-width: 960px) 550px, 860px`
-  image.srcset = `${image350} 350w, ${image550} 550w, ${image860} 860w`
+  // image.sizes = `(max-width: 500px) 350px, (max-width: 960px) 550px, 860px`
+  // image.srcset = `${image350} 350w, ${image550} 550w, ${image860} 860w`
+
+  image.setAttribute('data-srcset', `${image350} 350w, ${image550} 550w, ${image860} 860w`);
+  image.setAttribute('data-sizes',`(max-width: 500px) 350px, (max-width: 960px) 550px, 860px`);
   image.alt = `This is image of ${restaurant.name}`;
   li.append(image);
 
-  const name = document.createElement('h1');
+  const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
 
@@ -213,6 +220,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 
 } 
+
 /* addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map

@@ -7,6 +7,9 @@ var newMap;
 document.addEventListener('DOMContentLoaded', (event) => {  
   initMap();
 });
+var myLazyLoad = new LazyLoad({
+  elements_selector: ".lazy"
+});
 
 /**
  * Initialize leaflet map
@@ -71,6 +74,7 @@ fetchRestaurantFromURL = (callback) => {
         return;
       }
       fillRestaurantHTML();
+      myLazyLoad.update();
       callback(null, restaurant)
     });
   }
@@ -87,19 +91,21 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
+  image.className = 'restaurant-img lazy'
 
   let baseImgUrl = DBHelper.imageUrlForRestaurant(restaurant);
-  let imagName = baseImgUrl.split(".")[0];
+  let imagName = baseImgUrl.split(".jpg")[0];
 
   let image350 = `${imagName}_350.jpg`;
   let image550 = `${imagName}_550.jpg`;
   let image860 = `${imagName}_860.jpg`;
 
-  image.src = image350;  //fallback image
+  image.setAttribute('data-src', image350);  //fallback image
 
-  image.sizes = `(max-width: 500px) 350px, (max-width: 960px) 550px, 860px`
-  image.srcset = `${image350} 350w, ${image550} 550w, ${image860} 860w`
+  image.setAttribute('data-srcset', `${image350} 350w, ${image550} 550w, ${image860} 860w`);
+  image.setAttribute('data-sizes', `(max-width: 500px) 350px, (max-width: 960px) 550px, 860px`);
+  // image.sizes = `(max-width: 500px) 350px, (max-width: 960px) 550px, 860px`
+  // image.srcset = `${image350} 350w, ${image550} 550w, ${image860} 860w`
   image.alt = `This is image of ${restaurant.name}`;
   
   const cuisine = document.getElementById('restaurant-cuisine');
@@ -204,3 +210,6 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+var myLazyLoad = new LazyLoad({
+  elements_selector: ".lazy"
+});
